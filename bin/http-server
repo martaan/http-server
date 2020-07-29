@@ -131,6 +131,16 @@ function listen(port) {
     password: argv.password || process.env.NODE_HTTP_SERVER_PASSWORD
   };
 
+  if (argv.upstreamHeader) {
+    var upstreamHeaders = typeof argv.upstreamHeader === 'string' ? [argv.upstreamHeader] : argv.upstreamHeader;
+    options.upstreamHeaders = upstreamHeaders
+      .map(header => header.split(':'))
+      .reduce((prev, curr) => {
+        prev[curr[0].trim()] = curr[1].trim();
+        return prev
+      }, {})
+  }
+
   if (argv.cors) {
     options.cors = true;
     if (typeof argv.cors === 'string') {
